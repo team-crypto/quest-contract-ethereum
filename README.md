@@ -1,4 +1,4 @@
-# Project Dev Nagato / Contract
+# quest-contract-ethereum
 
 ## install node_modules
 At first, you install these modules with the following : 
