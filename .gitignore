@@ -1,0 +1,18 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dependency Jetbrains IDE directories
+.idea/
+
+!.gitkeep
+node_modules/
+
+build/contracts/
+
+coverage/
+coverage.json
+
