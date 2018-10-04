@@ -1,32 +1,55 @@
 # quest-contract-ethereum
 
-## install node_modules
-At first, you install these modules with the following : 
+## Dependencies
+- truffle
+- geth (or Ganache)
+- node.js
+
+
+### install truffle
+You install globally `truffle` with the following :
+```
+$ npm i -g truffle
+```
+
+
+### install npm modules
+You install these modules with the following : 
 ```
 $ npm i
 ```
 
 
-### Solium
-http://solium.readthedocs.io/en/latest/
+### privatenet (geth)
+You can not run without geth in the local environment. If geth is not installed, please install it.
 
-Solium analyzes your Solidity code for style & security issues and fixes them.
 
-You can make the linter watch the solidity files :
+First, run `launch_test_net.sh` in the scripts directory from the terminal.
+
+If DAG is not generated, it will take some time for DAG to be generated.
+
+Please open another terminal and execute the following command.
+
+
+##### truffle console
+You can enter truffle console with the following : 
 ```
-$ npm run solium
+$ truffle console
 ```
 
 
-### solidity-coverage
-https://www.npmjs.com/package/solidity-coverage
+### privatenet (Ganache)
+Or, you can use Ganache as the local environment. If Ganache is not installed, please install it.
 
-Testing and Code Coverage of Solidity Smart Contracts
+First, run Ganache app.
 
-
+##### truffle
+You can enter truffle console with the following : 
 ```
-$ npm run coverage
+$ truffle console --network ganache
 ```
+
+
 
 
 
