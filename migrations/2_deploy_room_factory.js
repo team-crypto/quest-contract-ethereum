@@ -1,5 +1,5 @@
 const fs = require('fs')
-const RoomFactory = artifacts.require('./RoomFactory.sol');
+const RoomFactory = artifacts.require('./RoomFactory.sol')
 
 module.exports = deployer => {
     deployer.deploy(RoomFactory).then(instance => {
