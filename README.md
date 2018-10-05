@@ -59,7 +59,7 @@ You can also use Ganache app as the local environment. If Ganache app is not ins
 
 First, run Ganache app.
 
-#### truffle
+#### truffle console
 You can enter truffle console with the following : 
 ```
 $ truffle console --network ganache
