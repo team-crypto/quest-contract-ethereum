@@ -2,8 +2,8 @@
 
 ## Dependencies
 - truffle
-- geth (or Ganache)
 - node.js
+- geth (or Ganache)
 
 
 ### install truffle
@@ -31,19 +31,35 @@ If DAG is not generated, it will take some time for DAG to be generated.
 Please open another terminal and execute the following command.
 
 
-##### truffle console
+#### truffle console
 You can enter truffle console with the following : 
 ```
 $ truffle console
 ```
 
 
-### privatenet (Ganache)
-Or, you can use Ganache as the local environment. If Ganache is not installed, please install it.
+### privatenet (Ganache GLI)
+Or, you can use Ganache as the local environment.
+
+First, run Ganache CLI from the terminal.
+```
+$ ganache-cli
+```
+
+
+#### truffle console
+You can enter truffle console with the following : 
+```
+$ truffle console
+```
+
+
+### privatenet (Ganache app)
+You can also use Ganache app as the local environment. If Ganache app is not installed, [please install it](https://truffleframework.com/ganache).
 
 First, run Ganache app.
 
-##### truffle
+#### truffle
 You can enter truffle console with the following : 
 ```
 $ truffle console --network ganache
