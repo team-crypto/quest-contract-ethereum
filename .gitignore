@@ -16,3 +16,5 @@ build/contracts/
 coverage/
 coverage.json
 
+# geth data
+scripts/geth_private_testnet/
