@@ -38,7 +38,7 @@ $ truffle console
 ```
 
 
-### privatenet (Ganache GLI)
+### privatenet (Ganache CLI)
 Or, you can use Ganache as the local environment.
 
 First, run Ganache CLI from the terminal.
