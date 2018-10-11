@@ -11,7 +11,7 @@ const RoomFactory = artifacts.require('./RoomFactory.sol')
 
 contract('RoomFactory', ([factoryOwner, roomOwner1, roomOwner2, roomOwner3, ...accounts]) => {
 
-    describe('as an instance', function () {
+    describe('as an instance', () => {
 
         beforeEach(async function () {
             this.roomFactory = await RoomFactory.new({ from: factoryOwner })
@@ -21,7 +21,7 @@ contract('RoomFactory', ([factoryOwner, roomOwner1, roomOwner2, roomOwner3, ...a
             this.roomFactory.should.exist
         })
 
-        describe('createRoom', function () {
+        describe('createRoom', () => {
             const amount = web3.toWei('1', 'ether')
 
             it('should create a room', async function () {
@@ -65,7 +65,7 @@ contract('RoomFactory', ([factoryOwner, roomOwner1, roomOwner2, roomOwner3, ...a
             })
 
             it('can accept an empty deposit', async function () {
-                const {logs} = await this.roomFactory.createRoom({ from: roomOwner1, value: web3.toWei('0', 'ether') })
+                const { logs } = await this.roomFactory.createRoom({ from: roomOwner1, value: web3.toWei('0', 'ether') })
                 const event = await expectEvent.inLogs(logs, 'RoomCreated')
 
                 const factoryBalance = await web3.eth.getBalance(this.roomFactory.address)
