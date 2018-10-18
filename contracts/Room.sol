@@ -4,7 +4,6 @@ import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "./Activatable.sol";
 
-
 /**
  * @title Room
  * @dev The Room contract can be deposited in escrow.

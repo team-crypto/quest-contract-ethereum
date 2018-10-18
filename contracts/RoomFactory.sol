@@ -4,7 +4,6 @@ import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "./Room.sol";
 
-
 /**
  * @title RoomFactory
  * @dev The RoomFactory contract can create rooms with `createRoom` payable function
