@@ -15,8 +15,8 @@ contract Activatable is Ownable {
     bool public active = false;
 
     /**
-    * @dev Modifier to make a function callable only when the contract is active.
-    */
+     * @dev Modifier to make a function callable only when the contract is active.
+     */
     modifier whenActive() {
         require(active, "Room status must be active to call this function");
         _;
