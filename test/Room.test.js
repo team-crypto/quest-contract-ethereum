@@ -110,111 +110,125 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
 //                const getherAmount = web3.toWei('1.0', 'gether')
 //                const tetherAmount = web3.toWei('2', 'tether')
 
-                await this.room.sendReward(kweiAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(kweiAmount, accounts[1], 1, { from: roomOwner })
                     .should.be.fulfilled
-                await this.room.sendReward(mweiAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(mweiAmount, accounts[1], 2, { from: roomOwner })
                     .should.be.fulfilled
-                await this.room.sendReward(gweiAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(gweiAmount, accounts[1], 3, { from: roomOwner })
                     .should.be.fulfilled
-                await this.room.sendReward(szaboAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(szaboAmount, accounts[1], 4, { from: roomOwner })
                     .should.be.fulfilled
-                await this.room.sendReward(finneyAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(finneyAmount, accounts[1], 5, { from: roomOwner })
                     .should.be.fulfilled
 
 // ルームへのデポジット額が大きくなりうるのであれば検証必要
-//                await this.room.sendReward(etherAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(etherAmount, accounts[1], 1, { from: roomOwner })
 //                    .should.be.fulfilled
-//                await this.room.sendReward(ketherAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(ketherAmount, accounts[1], 2, { from: roomOwner })
 //                    .should.be.fulfilled
-//                await this.room.sendReward(grandAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(grandAmount, accounts[1], 3, { from: roomOwner })
 //                    .should.be.fulfilled
-//                await this.room.sendReward(metherAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(metherAmount, accounts[1], 4, { from: roomOwner })
 //                    .should.be.fulfilled
-//                await this.room.sendReward(getherAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(getherAmount, accounts[1], 5, { from: roomOwner })
 //                    .should.be.fulfilled
-//                await this.room.sendReward(tetherAmount, accounts[1], { from: roomOwner })
+//                await this.room.sendReward(tetherAmount, accounts[1], 6, { from: roomOwner })
 //                    .should.be.fulfilled
             })
 
             it('cannot send the reward from any accounts except the room owner', async function () {
                 const amount = web3.toWei('.5', 'ether')
 
-                await this.room.sendReward(amount, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, roomOwner, { from: roomOwner })
+                await this.room.sendReward(amount, roomOwner, 2, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 3, { from: roomOwner })
+                    .should.be.fulfilled
+            })
+
+            it('cannot send reward if ids are duplicated', async function () {
+                const amount = web3.toWei('.3', 'ether')
+                // コントラクトにデポジットしている額が1etherなのでテスト回数を増やしすぎると、balnceに関するエラーでrevertされます
+
+                await this.room.sendReward(amount, accounts[1], 345, { from: roomOwner })
+                    .should.be.fulfilled
+                await this.room.sendReward(amount, accounts[1], 345, { from: roomOwner })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.sendReward(amount, accounts[1], 49, { from: roomOwner })
+                    .should.be.fulfilled
+                await this.room.sendReward(amount, accounts[1], 104, { from: roomOwner })
                     .should.be.fulfilled
             })
 
             it('cannot transfer zero amount as the reward', async function () {
                 const smallAmount = web3.toWei('0.0001', 'ether')
 
-                await this.room.sendReward(smallAmount, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(smallAmount, roomOwner, 1, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(smallAmount, roomOwner, { from: roomOwner })
+                await this.room.sendReward(smallAmount, roomOwner, 2, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(smallAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(smallAmount, accounts[1], 3, { from: roomOwner })
                     .should.be.fulfilled
 
-                await this.room.sendReward(0, accounts[1], { from: accounts[0] })
+                await this.room.sendReward(0, accounts[1], 4, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(0, accounts[1], { from: roomOwner })
+                await this.room.sendReward(0, accounts[1], 5, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(0, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(0, roomOwner, 6, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(0, roomOwner, { from: roomOwner })
+                await this.room.sendReward(0, roomOwner, 7, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
 
 
-                await this.room.sendReward(smallAmount, accounts[1], { from: accounts[0] })
+                await this.room.sendReward(smallAmount, accounts[1], 8, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(smallAmount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(smallAmount, accounts[1], 9, { from: roomOwner })
                     .should.be.fulfilled
             })
 
             it('cannot send the reward if the amount is more than the room balance', async function () {
                 const amount = web3.toWei('1.1', 'ether')
 
-                await this.room.sendReward(amount, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, roomOwner, { from: roomOwner })
+                await this.room.sendReward(amount, roomOwner, 2, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
 
-                await this.room.sendReward(amount, accounts[1], { from: accounts[0] })
+                await this.room.sendReward(amount, accounts[1], 3, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 4, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
             })
 
             it('can send the reward equivalent to the room balance only from the room owner', async function () {
                 const amount = web3.toWei('1', 'ether')
 
-                await this.room.sendReward(amount, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, roomOwner, { from: roomOwner })
+                await this.room.sendReward(amount, roomOwner, 2, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 3, { from: roomOwner })
                     .should.be.fulfilled
 
-                await this.room.sendReward(amount, accounts[1], { from: accounts[0] })
+                await this.room.sendReward(amount, accounts[1], 4, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
             })
 
             it('the only owner can send reward if the amount is less than or equal to the room balance, but zero amount is not acceptable', async function () {
                 const amount = web3.toWei('.5', 'ether')
 
-                await this.room.sendReward(amount, roomOwner, { from: accounts[0] })
+                await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, roomOwner, { from: roomOwner })
+                await this.room.sendReward(amount, roomOwner, 2, { from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 3, { from: roomOwner })
                     .should.be.fulfilled
             })
 
             it('should emit a RewardSent event', async function () {
                 const amount = web3.toWei('.5', 'ether')
-                const { logs } = await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                const { logs } = await this.room.sendReward(amount, accounts[1], 1, { from: roomOwner })
 
                 const event = await expectEvent.inLogs(logs, 'RewardSent')
                 event.args._reward.should.be.bignumber.equal(amount)
@@ -254,7 +268,7 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
             it('can refund if the room balance is larger than zero', async function () {
                 const amount = web3.toWei('1', 'ether')
 
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 1, { from: roomOwner })
                 await this.room.refundToOwner({ from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
                 await this.room.deposit({ from: accounts[0], value: amount })
@@ -296,7 +310,7 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
                 await this.room.refundToOwner({ from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
 
-                await this.room.sendReward(amount, accounts[1], { from: roomOwner })
+                await this.room.sendReward(amount, accounts[1], 1, { from: roomOwner })
                 await this.room.refundToOwner({ from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
 
