@@ -1,15 +1,9 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "./Activatable.sol";
 
-/**
- * @title Room
- * @dev The Room contract can be deposited in escrow.
- *  The room owner can send the reward to selected questions
- *  on the Q&A style application.
- */
 contract Room is Destructible, Pausable, Activatable {
 
     mapping (uint => bool) public rewardSent;
@@ -34,20 +28,11 @@ contract Room is Destructible, Pausable, Activatable {
         owner = _creator;
     }
 
-    /**
-     * @dev Deposit Eth for the prize to the Room contract.
-     */
     function deposit() external payable whenNotPaused {
         require(msg.value > 0, "Deposited value must be larger than 0");
         emit Deposited(msg.sender, msg.value);
     }
 
-    /**
-     * @dev Transfer _reward to _dest when _dest's question is selected.
-     * @param _reward reward selected questioner can get
-     * @param _dest questioner's address
-     * @param _id ID of question, selected by owner
-     */
     function sendReward(uint _reward, address _dest, uint _id) external onlyOwner {
         require(!rewardSent[_id], "Reward had been already sent to the selected question");
         require(_reward > 0, "Reward must be larger than 0");
@@ -59,10 +44,6 @@ contract Room is Destructible, Pausable, Activatable {
         emit RewardSent(_dest, _reward, _id);
     }
 
-    /**
-     * @dev Refund the rest of deposit to owner. When and only when this room is deactivated,
-     * all deposit is refunded to owner.
-     */
     function refundToOwner() external whenNotActive onlyOwner {
         require(address(this).balance > 0, "Contract balance must be larger than 0");
 
