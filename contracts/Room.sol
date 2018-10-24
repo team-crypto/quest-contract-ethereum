@@ -4,12 +4,11 @@ import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "./Activatable.sol";
 
-
 /**
  * @title Room
  * @dev The Room contract can be deposited in escrow.
- * The room owner can send the reward to selected questions
- * on the Q&A style application.
+ *  The room owner can send the reward to selected questions
+ *  on the Q&A style application.
  */
 contract Room is Destructible, Pausable, Activatable {
 
