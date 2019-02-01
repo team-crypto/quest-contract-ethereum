@@ -17,7 +17,6 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
         beforeEach(async function () {
             this.roomFactory = await RoomFactory.new({ from: factoryOwner })
 
-            //room作成時にあらかじめ1ethをデポジットしている
             const { logs } = await this.roomFactory.createRoom({ from: roomOwner, value: web3.toWei('1', 'ether') })
             const event = await expectEvent.inLogs(logs, 'RoomCreated')
             this.room = await Room.at(event.args._room)
@@ -102,14 +101,6 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
                 const szaboAmount = web3.toWei('1.0', 'szabo')
                 const finneyAmount = web3.toWei('2', 'finney')
 
-// ルームへのデポジット額が大きくなりうるのであれば検証必要
-//                const etherAmount = web3.toWei('3', 'ether')
-//                const ketherAmount = web3.toWei('3', 'kether')
-//                const grandAmount = web3.toWei('1.5', 'grand')
-//                const metherAmount = web3.toWei('1.5', 'mether')
-//                const getherAmount = web3.toWei('1.0', 'gether')
-//                const tetherAmount = web3.toWei('2', 'tether')
-
                 await this.room.sendReward(kweiAmount, accounts[1], 1, { from: roomOwner })
                     .should.be.fulfilled
                 await this.room.sendReward(mweiAmount, accounts[1], 2, { from: roomOwner })
@@ -120,23 +111,9 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
                     .should.be.fulfilled
                 await this.room.sendReward(finneyAmount, accounts[1], 5, { from: roomOwner })
                     .should.be.fulfilled
-
-// ルームへのデポジット額が大きくなりうるのであれば検証必要
-//                await this.room.sendReward(etherAmount, accounts[1], 1, { from: roomOwner })
-//                    .should.be.fulfilled
-//                await this.room.sendReward(ketherAmount, accounts[1], 2, { from: roomOwner })
-//                    .should.be.fulfilled
-//                await this.room.sendReward(grandAmount, accounts[1], 3, { from: roomOwner })
-//                    .should.be.fulfilled
-//                await this.room.sendReward(metherAmount, accounts[1], 4, { from: roomOwner })
-//                    .should.be.fulfilled
-//                await this.room.sendReward(getherAmount, accounts[1], 5, { from: roomOwner })
-//                    .should.be.fulfilled
-//                await this.room.sendReward(tetherAmount, accounts[1], 6, { from: roomOwner })
-//                    .should.be.fulfilled
             })
 
-            it('cannot send the reward from any accounts except the room owner', async function () {
+            it('cannot send reward from any accounts except the room owner', async function () {
                 const amount = web3.toWei('.5', 'ether')
 
                 await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
@@ -149,7 +126,6 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
 
             it('cannot send reward if ids are duplicated', async function () {
                 const amount = web3.toWei('.3', 'ether')
-                // コントラクトにデポジットしている額が1etherなのでテスト回数を増やしすぎると、balnceに関するエラーでrevertされます
 
                 await this.room.sendReward(amount, accounts[1], 345, { from: roomOwner })
                     .should.be.fulfilled
@@ -187,7 +163,7 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
                     .should.be.fulfilled
             })
 
-            it('cannot send the reward if the amount is more than the room balance', async function () {
+            it('cannot send reward if the amount is more than the room balance', async function () {
                 const amount = web3.toWei('1.1', 'ether')
 
                 await this.room.sendReward(amount, roomOwner, 1, { from: accounts[0] })
@@ -213,6 +189,20 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
 
                 await this.room.sendReward(amount, accounts[1], 4, { from: accounts[0] })
                     .should.be.rejectedWith(EVMRevert)
+            })
+
+            it('cannot send reward to the recipient address which is not valid', async function () {
+                const amount = web3.toWei('.1', 'ether')
+
+                await this.room.sendReward(amount, '0x0', 1, { from: roomOwner })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.sendReward(amount, '0x0000000000000000000000000000000000000000', 2, { from: roomOwner })
+                    .should.be.rejectedWith(EVMRevert)
+
+                await this.room.sendReward(amount, '0x1000000000000000000000000000000000000000', 3, { from: roomOwner })
+                    .should.be.fulfilled
+                await this.room.sendReward(amount, accounts[0], 4, { from: roomOwner })
+                    .should.be.fulfilled
             })
 
             it('the only owner can send reward if the amount is less than or equal to the room balance, but zero amount is not acceptable', async function () {
@@ -256,7 +246,6 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
             })
 
             it('only the room owner can refund when the room is not active', async function () {
-                //初めからdeactivateされてることを保証
                 await this.room.deactivate({ from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
                 await this.room.refundToOwner({ from: accounts[0] })
@@ -304,7 +293,6 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
             it('cannot refund to owner when activated', async function () {
                 const amount = web3.toWei('1', 'ether')
 
-                //前提としてactive化させている
                 await this.room.activate({ from: roomOwner })
 
                 await this.room.refundToOwner({ from: roomOwner })
@@ -317,6 +305,94 @@ contract('Room', ([factoryOwner, roomOwner, ...accounts]) => {
                 await this.room.deposit({ from: accounts[0], value: amount })
                 await this.room.refundToOwner({ from: roomOwner })
                     .should.be.rejectedWith(EVMRevert)
+            })
+        })
+
+        describe('destroy', () => {
+            it('only the room owner can pause destroy function', async function () {
+                await this.room.pause({ from: accounts[0] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.pause({ from: roomOwner })
+                    .should.be.fulfilled
+
+                await this.room.destroy({ from: accounts[0] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroy({ from: roomOwner })
+                    .should.be.fulfilled
+            })
+
+            it('only the room owner can unpause destroy function', async function () {
+                await this.room.pause({ from: roomOwner })
+
+                await this.room.unpause({ from: accounts[1] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.unpause({ from: roomOwner })
+                    .should.be.fulfilled
+
+                await this.room.destroy({ from: accounts[1] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroy({ from: roomOwner })
+                    .should.be.rejectedWith(EVMRevert)
+            })
+
+            it('any sender cannot destroy the contract in unpaused state', async function () {
+                await this.room.destroy({ from: roomOwner })
+                    .should.rejectedWith(EVMRevert)
+                await this.room.destroy({ from: accounts[2] })
+                    .should.rejectedWith(EVMRevert)
+            })
+
+            it('only the room owner can destroy the contract in paused state', async function () {
+                await this.room.pause({ from: roomOwner })
+
+                await this.room.destroy({ from: accounts[2] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroy({ from: roomOwner })
+                    .should.be.fulfilled
+            })
+        })
+
+        describe('destroyAndSend', () => {
+            it('only the room owner can pause destroyAndSend function', async function () {
+                await this.room.pause({ from: accounts[0] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.pause({ from: roomOwner })
+                    .should.be.fulfilled
+
+                await this.room.destroyAndSend(roomOwner, { from: accounts[0] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroyAndSend(roomOwner, { from: roomOwner })
+                    .should.be.fulfilled
+            })
+
+            it('only the room owner can unpause destroyAndSend function', async function () {
+                await this.room.pause({ from: roomOwner })
+
+                await this.room.unpause({ from: accounts[1] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.unpause({ from: roomOwner })
+                    .should.be.fulfilled
+
+                await this.room.destroyAndSend(accounts[0], { from: accounts[1] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroyAndSend(accounts[0], { from: roomOwner })
+                    .should.be.rejectedWith(EVMRevert)
+            })
+
+            it('any sender cannot destroy the contract in unpaused state', async function () {
+                await this.room.destroyAndSend(accounts[1], { from: roomOwner })
+                    .should.rejectedWith(EVMRevert)
+                await this.room.destroyAndSend(accounts[1], { from: accounts[2] })
+                    .should.rejectedWith(EVMRevert)
+            })
+
+            it('only the room owner can destroy the contract in paused state', async function () {
+                await this.room.pause({ from: roomOwner })
+
+                await this.room.destroyAndSend(accounts[2], { from: accounts[2] })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.room.destroyAndSend(accounts[2], { from: roomOwner })
+                    .should.be.fulfilled
             })
         })
     })

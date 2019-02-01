@@ -98,5 +98,93 @@ contract('RoomFactory', ([factoryOwner, roomOwner1, roomOwner2, roomOwner3, ...a
                     .should.be.fulfilled
             })
         })
+
+        describe('destroy', () => {
+            it('only the factory owner can pause destroy function', async function () {
+                await this.roomFactory.pause({ from: roomOwner1 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.pause({ from: factoryOwner })
+                    .should.be.fulfilled
+
+                await this.roomFactory.destroy({ from: roomOwner1 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroy({ from: factoryOwner })
+                    .should.be.fulfilled
+            })
+
+            it('only the factory owner can unpause destroy function', async function () {
+                await this.roomFactory.pause({ from: factoryOwner })
+
+                await this.roomFactory.unpause({ from: roomOwner2 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.unpause({ from: factoryOwner })
+                    .should.be.fulfilled
+
+                await this.roomFactory.destroy({ from: roomOwner2 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroy({ from: factoryOwner })
+                    .should.be.rejectedWith(EVMRevert)
+            })
+
+            it('any sender cannot destroy the contract in unpaused state', async function () {
+                await this.roomFactory.destroy({ from: factoryOwner })
+                    .should.rejectedWith(EVMRevert)
+                await this.roomFactory.destroy({ from: roomOwner3 })
+                    .should.rejectedWith(EVMRevert)
+            })
+
+            it('only the factory owner can destroy the contract in paused state', async function () {
+                await this.roomFactory.pause({ from: factoryOwner })
+
+                await this.roomFactory.destroy({ from: roomOwner3 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroy({ from: factoryOwner })
+                    .should.be.fulfilled
+            })
+        })
+
+        describe('destroyAndSend', () => {
+            it('only the factory owner can pause destroyAndSend function', async function () {
+                await this.roomFactory.pause({ from: roomOwner1 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.pause({ from: factoryOwner })
+                    .should.be.fulfilled
+
+                await this.roomFactory.destroyAndSend(factoryOwner, { from: roomOwner1 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroyAndSend(factoryOwner, { from: factoryOwner })
+                    .should.be.fulfilled
+            })
+
+            it('only the factory owner can unpause destroyAndSend function', async function () {
+                await this.roomFactory.pause({ from: factoryOwner })
+
+                await this.roomFactory.unpause({ from: roomOwner2 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.unpause({ from: factoryOwner })
+                    .should.be.fulfilled
+
+                await this.roomFactory.destroyAndSend(roomOwner1, { from: roomOwner2 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroyAndSend(roomOwner1, { from: factoryOwner })
+                    .should.be.rejectedWith(EVMRevert)
+            })
+
+            it('any sender cannot destroy the contract in unpaused state', async function () {
+                await this.roomFactory.destroyAndSend(roomOwner2, { from: factoryOwner })
+                    .should.rejectedWith(EVMRevert)
+                await this.roomFactory.destroyAndSend(roomOwner2, { from: roomOwner3 })
+                    .should.rejectedWith(EVMRevert)
+            })
+
+            it('only the factory owner can destroy the contract in paused state', async function () {
+                await this.roomFactory.pause({ from: factoryOwner })
+
+                await this.roomFactory.destroyAndSend(roomOwner3, { from: roomOwner3 })
+                    .should.be.rejectedWith(EVMRevert)
+                await this.roomFactory.destroyAndSend(roomOwner3, { from: factoryOwner })
+                    .should.be.fulfilled
+            })
+        })
     })
 })
