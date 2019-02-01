@@ -12,6 +12,20 @@ You install globally `truffle` with the following :
 $ npm i -g truffle
 ```
 
+```
+$ npx truffle migrate --reset --network ropsten
+```
+
+##### NOTICE
+If you have globally installed Truffle version 5, you have to run with `npx` command in order to use version 4.1.14 locally installed.
+
+e.g
+```
+$ npx truffle compile --all
+```
+
+
+
 
 ### install npm modules
 You install these modules with the following : 
