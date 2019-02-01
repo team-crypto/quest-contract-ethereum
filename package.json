@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "truffle compile",
-    "start": "truffle compile && truffle migrate --network privatenet && node server.js",
+    "start": "truffle compile && node server.js",
     "coverage": "solidity-coverage",
     "ethlint": "solium --watch --dir ./"
   },
