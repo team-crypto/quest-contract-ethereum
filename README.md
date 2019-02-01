@@ -1,20 +1,19 @@
 # quest-contract-ethereum
 
 ## Dependencies
-- truffle
+- truffle v4.1.14
 - node.js
 - geth (or Ganache)
 
 
 ### install truffle
-You install globally `truffle` with the following :
+You install globally `truffle` version 4.1.14 with the following :
 ```
-$ npm i -g truffle
+$ npm i -g truffle@4.1.14
 ```
 
-```
-$ npx truffle migrate --reset --network ropsten
-```
+Because of the solidity compiler(solc-js) version 0.4.24, you need to install truffle version 4.1.14.
+
 
 ##### NOTICE
 If you have globally installed Truffle version 5, you have to run with `npx` command in order to use version 4.1.14 locally installed.
@@ -24,7 +23,9 @@ e.g
 $ npx truffle compile --all
 ```
 
-
+```
+$ npx truffle migrate --reset --network ropsten
+```
 
 
 ### install npm modules
