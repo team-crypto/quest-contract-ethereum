@@ -1,5 +1,5 @@
 {
-  "name": "sc-deploy",
+  "name": "questd-contract-ethereum",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -7,12 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "cloud-build-compile": "truffle compile --all",
     "test": "truffle compile",
-    "start": "node server.js",
+    "start": "truffle compile && truffle migrate --network privatenet && node server.js",
     "coverage": "solidity-coverage",
-    "solium": "solium --watch --dir ./",
-    "cloud-build-solium": "solium --dir ./contracts"
+    "ethlint": "solium --watch --dir ./"
   },
   "keywords": [],
   "author": "",
@@ -21,16 +19,14 @@
     "express": "^4.16.3",
     "ganache-cli": "^6.1.8",
     "openzeppelin-solidity": "^1.12.0",
-    "truffle": "^4.1.14",
-    "truffle-contract": "^3.0.6",
-    "web3": "^1.0.0-beta.35",
-    "webpack": "^4.0.0"
+    "truffle": "4.1.14"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
+    "ethlint": "^1.2.0",
     "solidity-coverage": "^0.5.5",
-    "solium": "^1.1.8"
+    "truffle-hdwallet-provider": "0.0.6"
   }
 }
