@@ -26,7 +26,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
     "ethlint": "^1.2.0",
-    "solidity-coverage": "^0.5.5",
-    "truffle-hdwallet-provider": "0.0.6"
+    "solidity-coverage": "^0.5.11",
+    "truffle-hdwallet-provider": "1.0.17"
   }
 }
